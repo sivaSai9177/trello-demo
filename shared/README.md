@@ -2,6 +2,31 @@
 
 Shared TypeScript types between frontend and backend - **automatically synced with database schema**.
 
+## ⚠️ IMPORTANT: No node_modules Required
+
+**This package should NOT have its own `node_modules` folder.**
+
+The `drizzle-orm` dependency is marked as a `peerDependency`, which means it uses the `drizzle-orm` installation from the consuming project (backend/frontend). This prevents TypeScript type conflicts.
+
+**If you see a `node_modules` folder here:**
+```bash
+cd shared
+rm -rf node_modules bun.lock
+```
+
+**TypeScript Configuration:**
+The `shared/tsconfig.json` tells VSCode where to find `drizzle-orm`:
+```json
+{
+  "compilerOptions": {
+    "paths": {
+      "drizzle-orm": ["../backend/node_modules/drizzle-orm"]
+    }
+  }
+}
+```
+This fixes the "Cannot find module 'drizzle-orm'" error in VSCode while keeping the shared folder dependency-free.
+
 ## Why This Package?
 
 This package solves two critical problems:
@@ -99,13 +124,17 @@ projects[0].color // ✅ TypeScript knows this exists
 ### Shared Package (package.json)
 ```json
 {
-  "devDependencies": {
-    "drizzle-orm": "0.44.6"
+  "peerDependencies": {
+    "drizzle-orm": ">=0.44.0"
   }
 }
 ```
 
-**Important:** The `drizzle-orm` version in shared must exactly match the backend version (without `^`). This prevents TypeScript type incompatibility errors.
+**Important:**
+- `drizzle-orm` is a **peerDependency**, not a regular dependency
+- This means it uses the version installed in backend/frontend
+- No `node_modules` should exist in the `shared` folder
+- This prevents TypeScript type conflicts from multiple `drizzle-orm` installations
 
 ## Benefits
 

@@ -12,7 +12,7 @@ interface ProjectsListProps {
   initialProjects?: Project[];
 }
 
-export function ProjectsList({ initialProjects }: ProjectsListProps) {
+export function ProjectsList({ initialProjects = [] }: ProjectsListProps = {}) {
   // Use TanStack Query - it will use the loader's prefetched data from cache
   const { data: projects, error } = useProjectsRPC();
   const createProject = useCreateProjectRPC();

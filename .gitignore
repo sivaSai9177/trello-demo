@@ -3,6 +3,7 @@
 .AppleDouble
 .LSOverride
 node_modules
+
 # IDE
 .vscode/
 .idea/
@@ -27,3 +28,11 @@ lerna-debug.log*
 # Temporary files
 *.tmp
 *.temp
+
+# Expo (Mobile)
+mobile/.expo/
+mobile/dist/
+mobile/npm-debug.*
+mobile/web-build/
+mobile/android/
+mobile/ios/

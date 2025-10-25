@@ -1,0 +1,19 @@
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "strict": true,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noEmit": true,
+    "paths": {
+      "@trello-demo/backend/*": ["../backend/src/*"],
+      "drizzle-orm": ["../backend/node_modules/drizzle-orm"]
+    }
+  },
+  "include": ["types.ts"],
+  "exclude": ["node_modules"]
+}

@@ -1,7 +1,5 @@
-import { ProjectsList } from "@/components/ProjectsList";
 import { createFileRoute } from "@tanstack/react-router";
-import { orpcClient } from "@/lib/orpc-client";
-import type { Project } from "@trello-demo/shared";
+import { lazy, Suspense } from "react";
 
 import {
   Zap,
@@ -11,27 +9,19 @@ import {
   Waves,
   Sparkles,
 } from "lucide-react";
-import { useEffect } from "react";
+
+// Lazy load ProjectsList to avoid SSR issues with oRPC client
+const ProjectsList = lazy(() =>
+  import("@/components/ProjectsList").then((mod) => ({ default: mod.ProjectsList }))
+);
 
 export const Route = createFileRoute("/")({
   component: App,
-  // Prefetch projects data on the server before rendering
-  loader: async ({ context: { queryClient } }) => {
-    // Fetch and return projects data
-    const projects = await queryClient.ensureQueryData({
-      queryKey: ["projects"],
-      queryFn: async (): Promise<Project[]> => {
-        return await orpcClient.projects.getAll();
-      },
-    });
-
-    return { projects };
-  },
+  // Note: Loader disabled because oRPC client doesn't work in SSR context
+  // The component handles data fetching via useProjectsRPC() hook client-side
 });
 
 function App() {
-  // Access loader data
-  const { projects } = Route.useLoaderData();
 
   const features = [
     {
@@ -134,7 +124,15 @@ function App() {
           ))}
         </div>
       </section> */}
-      <ProjectsList initialProjects={projects} />
+      <Suspense fallback={
+        <div className="p-4 max-w-4xl mx-auto">
+          <div className="flex items-center justify-center py-12">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-cyan-400" />
+          </div>
+        </div>
+      }>
+        <ProjectsList />
+      </Suspense>
     </div>
   );
 }

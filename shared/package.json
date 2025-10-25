@@ -7,7 +7,7 @@
   "exports": {
     ".": "./types.ts"
   },
-  "devDependencies": {
-    "drizzle-orm": "0.44.6"
+  "peerDependencies": {
+    "drizzle-orm": ">=0.44.0"
   }
 }

@@ -8,8 +8,14 @@ export function useProjectsRPC() {
   return useQuery<Project[]>({
     queryKey: ["projects"],
     queryFn: async () => {
+      // Skip during SSR (server-side rendering)
+      if (typeof window === "undefined") {
+        return [];
+      }
       return await orpcClient.projects.getAll();
     },
+    // Don't run query during SSR
+    enabled: typeof window !== "undefined",
   });
 }
 
