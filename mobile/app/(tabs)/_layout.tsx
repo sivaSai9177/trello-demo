@@ -2,7 +2,8 @@ import React from 'react';
 import { MaterialIcons } from '@expo/vector-icons';
 import { Tabs } from 'expo-router';
 import { BlurView } from 'expo-blur';
-import { Platform, StyleSheet } from 'react-native';
+import { Platform, StyleSheet, View } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
 
 import { GlassColors } from '@/constants/Colors';
 
@@ -11,21 +12,33 @@ export default function TabLayout() {
     <Tabs
       screenOptions={{
         headerShown: false,
-        tabBarActiveTintColor: GlassColors.accent.blue,
-        tabBarInactiveTintColor: GlassColors.text.tertiary,
+        tabBarActiveTintColor: Platform.OS === 'android' ? '#FFFFFF' : GlassColors.accent.blue,
+        tabBarInactiveTintColor: Platform.OS === 'android' ? 'rgba(255, 255, 255, 0.6)' : GlassColors.text.tertiary,
         tabBarStyle: {
           position: 'absolute',
-          backgroundColor: 'transparent',
+          backgroundColor: Platform.OS === 'android' ? 'transparent' : 'transparent',
           borderTopWidth: 0,
-          elevation: 0,
+          elevation: Platform.OS === 'android' ? 0 : 0,
         },
-        tabBarBackground: () => (
-          <BlurView
-            intensity={80}
-            tint="light"
-            style={StyleSheet.absoluteFill}
-          />
-        ),
+        tabBarBackground: () =>
+          Platform.OS === 'android' ? (
+            // Android: Solid gradient background
+            <View style={StyleSheet.absoluteFill}>
+              <LinearGradient
+                colors={['rgba(100, 126, 234, 0.98)' as any, 'rgba(118, 75, 162, 0.98)' as any]}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 0 }}
+                style={[StyleSheet.absoluteFill, { elevation: 8 }]}
+              />
+            </View>
+          ) : (
+            // iOS: Glassmorphism with BlurView
+            <BlurView
+              intensity={80}
+              tint="light"
+              style={StyleSheet.absoluteFill}
+            />
+          ),
       }}
     >
       <Tabs.Screen

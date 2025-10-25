@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { View, Text, TextInput, StyleSheet } from 'react-native';
+import { View, Text, TextInput, StyleSheet, Platform } from 'react-native';
 import { useForm } from '@tanstack/react-form';
 import { z } from 'zod';
 import { BlurView } from 'expo-blur';
@@ -61,13 +61,9 @@ export function ProjectForm({ visible, onClose, editingProject }: ProjectFormPro
 
   return (
     <GlassModal visible={visible} onClose={onClose}>
-      <BlurView intensity={40} tint="light" style={styles.container}>
-        <LinearGradient
-          colors={[GlassColors.glass.light, GlassColors.glass.dark]}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 1, y: 1 }}
-          style={styles.gradient}
-        >
+      {Platform.OS === 'android' ? (
+        // Android: Simple View with solid background (GlassModal provides white bg)
+        <View style={styles.androidContainer}>
           <View style={styles.content}>
             {/* Title */}
             <Text style={styles.title}>
@@ -154,8 +150,105 @@ export function ProjectForm({ visible, onClose, editingProject }: ProjectFormPro
               </GlassButton>
             </View>
           </View>
-        </LinearGradient>
-      </BlurView>
+        </View>
+      ) : (
+        // iOS: Glassmorphism with BlurView
+        <BlurView intensity={40} tint="light" style={styles.container}>
+          <LinearGradient
+            colors={[GlassColors.glass.light, GlassColors.glass.dark] as any}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 1 }}
+            style={styles.gradient}
+          >
+            <View style={styles.content}>
+              {/* Title */}
+              <Text style={styles.title}>
+                {editingProject ? 'Edit Project' : 'Create New Project'}
+              </Text>
+
+              {/* Name Field */}
+              <form.Field
+                name="name"
+                validators={{
+                  onChange: ({ value }) => {
+                    const result = z.string().min(1, 'Name is required').safeParse(value);
+                    return result.success ? undefined : result.error.issues[0].message;
+                  },
+                }}
+                children={(field) => (
+                  <View style={styles.fieldContainer}>
+                    <Text style={styles.label}>Project Name *</Text>
+                    <TextInput
+                      value={field.state.value}
+                      onChangeText={(text) => field.handleChange(text)}
+                      onBlur={field.handleBlur}
+                      placeholder="Enter project name"
+                      placeholderTextColor={GlassColors.text.tertiary}
+                      style={styles.input}
+                      autoFocus={!editingProject}
+                    />
+                    {field.state.meta.errors.length > 0 && (
+                      <Text style={styles.errorText}>
+                        {field.state.meta.errors[0]}
+                      </Text>
+                    )}
+                  </View>
+                )}
+              />
+
+              {/* Description Field */}
+              <form.Field
+                name="description"
+                children={(field) => (
+                  <View style={styles.fieldContainer}>
+                    <Text style={styles.label}>Description (optional)</Text>
+                    <TextInput
+                      value={field.state.value}
+                      onChangeText={(text) => field.handleChange(text)}
+                      onBlur={field.handleBlur}
+                      placeholder="Enter description"
+                      placeholderTextColor={GlassColors.text.tertiary}
+                      style={[styles.input, styles.textArea]}
+                      multiline
+                      numberOfLines={4}
+                      textAlignVertical="top"
+                    />
+                  </View>
+                )}
+              />
+
+              {/* Action Buttons */}
+              <View style={styles.buttonContainer}>
+                <form.Subscribe
+                  selector={(state) => [state.canSubmit, state.isSubmitting]}
+                  children={([canSubmit]) => (
+                    <GlassButton
+                      onPress={() => form.handleSubmit()}
+                      disabled={!canSubmit || isSubmitting}
+                      style={styles.submitButton}
+                    >
+                      {editingProject
+                        ? isSubmitting
+                          ? 'Saving...'
+                          : 'Save Changes'
+                        : isSubmitting
+                        ? 'Creating...'
+                        : 'Create Project'}
+                    </GlassButton>
+                  )}
+                />
+                <GlassButton
+                  onPress={onClose}
+                  variant="secondary"
+                  disabled={isSubmitting}
+                >
+                  Cancel
+                </GlassButton>
+              </View>
+            </View>
+          </LinearGradient>
+        </BlurView>
+      )}
     </GlassModal>
   );
 }
@@ -176,7 +269,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: GlassColors.text.primary,
+    color: Platform.OS === 'android' ? '#333333' : GlassColors.text.primary,
     marginBottom: 8,
   },
   fieldContainer: {
@@ -185,17 +278,17 @@ const styles = StyleSheet.create({
   label: {
     fontSize: 14,
     fontWeight: '600',
-    color: GlassColors.text.secondary,
+    color: Platform.OS === 'android' ? '#666666' : GlassColors.text.secondary,
   },
   input: {
-    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    backgroundColor: Platform.OS === 'android' ? '#F5F5F5' : 'rgba(255, 255, 255, 0.2)',
     borderWidth: 1,
-    borderColor: GlassColors.glass.border,
+    borderColor: Platform.OS === 'android' ? '#E0E0E0' : GlassColors.glass.border,
     borderRadius: 12,
     paddingHorizontal: 16,
     paddingVertical: 12,
     fontSize: 16,
-    color: GlassColors.text.primary,
+    color: Platform.OS === 'android' ? '#333333' : GlassColors.text.primary,
   },
   textArea: {
     minHeight: 100,
@@ -209,6 +302,10 @@ const styles = StyleSheet.create({
   buttonContainer: {
     gap: 12,
     marginTop: 8,
+  },
+  androidContainer: {
+    paddingHorizontal: 24,
+    paddingVertical: 32,
   },
   submitButton: {
     width: '100%',
