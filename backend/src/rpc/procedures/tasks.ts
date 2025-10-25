@@ -4,21 +4,11 @@ import { z } from "zod";
 import { eq } from "drizzle-orm";
 import * as tables from "../../db/schema";
 import type { Context } from "../context";
-
-// Validation schemas
-const taskCreateSchema = z.object({
-  projectId: z.number(),
-  title: z.string().min(1, "Title is required"),
-  status: z.enum(["todo", "in_progress", "done"]).default("todo"),
-  priority: z.enum(["low", "medium", "high"]).default("medium"),
-  assigneeId: z.number().optional().nullable(),
-});
-
-const taskUpdateSchema = taskCreateSchema.partial();
-
-const taskIdSchema = z.object({
-  id: z.number(),
-});
+import {
+  taskCreateSchema,
+  taskUpdateSchema,
+  taskIdSchema,
+} from "../../schemas/task.schema";
 
 // Create base procedure with context
 const baseProcedure = os.$context<Context>();

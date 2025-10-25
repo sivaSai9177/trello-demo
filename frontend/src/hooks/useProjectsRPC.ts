@@ -1,7 +1,7 @@
 // hooks/useProjectsRPC.ts - Type-safe RPC hooks using oRPC
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { orpcClient } from "../lib/orpc-client";
-import type { Project } from "@trello-demo/shared";
+import type { Project } from "@your-org/trello-backend-types";
 
 // Fetch all projects with oRPC
 export function useProjectsRPC() {

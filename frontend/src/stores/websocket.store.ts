@@ -1,7 +1,7 @@
 // stores/websocket.store.ts
 import { Store } from "@tanstack/store";
 import { useQueryClient } from "@tanstack/react-query";
-import type { Project } from "@trello-demo/shared";
+import type { Project } from "@your-org/trello-backend-types";
 
 interface WebSocketMessage {
   type: string;

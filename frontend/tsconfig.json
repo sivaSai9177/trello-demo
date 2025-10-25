@@ -21,9 +21,7 @@
     "noFallthroughCasesInSwitch": true,
     "noUncheckedSideEffectImports": true,
     "paths": {
-      "@/*": ["./src/*"],
-      "@trello-demo/shared": ["../shared/types.ts"],
-      "@trello-demo/backend/*": ["../backend/src/*"]
+      "@/*": ["./src/*"]
     }
   }
 }

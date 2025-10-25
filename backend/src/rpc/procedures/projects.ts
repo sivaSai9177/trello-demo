@@ -4,16 +4,7 @@ import { z } from "zod";
 import { desc, eq } from "drizzle-orm";
 import * as tables from "../../db/schema";
 import type { Context } from "../context";
-
-// Validation schemas
-const projectSchema = z.object({
-  name: z.string().min(1, "Name is required"),
-  description: z.string().optional(),
-});
-
-const projectIdSchema = z.object({
-  id: z.number(),
-});
+import { projectSchema, projectIdSchema } from "../../schemas/project.schema";
 
 // Create base procedure with context
 const baseProcedure = os.$context<Context>();

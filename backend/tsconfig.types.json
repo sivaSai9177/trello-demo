@@ -1,0 +1,46 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    /* Enable declaration file generation */
+    "declaration": true,
+    "declarationMap": true,
+    "emitDeclarationOnly": false,
+
+    /* Output settings */
+    "noEmit": false,
+    "outDir": "./dist",
+    "rootDir": "./src",
+
+    /* Module settings for npm package */
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+
+    /* Source mapping */
+    "sourceMap": false,
+
+    /* Skip lib checks for dependencies */
+    "skipLibCheck": true,
+
+    /* Remove path aliases for published package */
+    "paths": {}
+  },
+  "include": [
+    "src/exports.ts",
+    "src/types.ts",
+    "src/schemas/**/*",
+    "src/rpc/index.ts",
+    "src/rpc/context.ts",
+    "src/db/schema.ts"
+  ],
+  "exclude": [
+    "src/server.ts",
+    "src/index.ts",
+    "src/routes/**/*",
+    "src/ws/**/*",
+    "src/db/db.ts",
+    "src/rpc/procedures/**/*",
+    "scripts/**/*",
+    "dist",
+    "node_modules"
+  ]
+}

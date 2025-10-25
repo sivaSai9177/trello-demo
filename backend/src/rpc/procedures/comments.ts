@@ -4,24 +4,12 @@ import { z } from "zod";
 import { eq } from "drizzle-orm";
 import * as tables from "../../db/schema";
 import type { Context } from "../context";
-
-// Validation schemas
-const commentCreateSchema = z.object({
-  taskId: z.number(),
-  text: z.string().min(1, "Comment text is required"),
-});
-
-const commentUpdateSchema = z.object({
-  text: z.string().min(1).optional(),
-});
-
-const commentIdSchema = z.object({
-  id: z.number(),
-});
-
-const taskIdSchema = z.object({
-  taskId: z.number(),
-});
+import {
+  commentCreateSchema,
+  commentUpdateSchema,
+  commentIdSchema,
+  commentTaskIdSchema,
+} from "../../schemas/comment.schema";
 
 // Create base procedure with context
 const baseProcedure = os.$context<Context>();
@@ -35,7 +23,7 @@ export const commentsRouter = {
 
   // Get comments by task ID
   getByTaskId: baseProcedure
-    .input(taskIdSchema)
+    .input(commentTaskIdSchema)
     .handler(async ({ input, context }) => {
       const comments = await context.db
         .select()

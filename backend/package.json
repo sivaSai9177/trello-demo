@@ -1,8 +1,41 @@
 {
-  "name": "trello-demo",
+  "name": "@your-org/trello-backend-types",
+  "version": "1.0.0",
+  "description": "Shared types and schemas for Trello Demo API",
+  "main": "./dist/exports.js",
+  "types": "./dist/exports.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/exports.d.ts",
+      "import": "./dist/exports.js",
+      "require": "./dist/exports.js"
+    },
+    "./types": {
+      "types": "./dist/types.d.ts",
+      "import": "./dist/types.js"
+    },
+    "./schemas": {
+      "types": "./dist/schemas/index.d.ts",
+      "import": "./dist/schemas/index.js"
+    },
+    "./router": {
+      "types": "./dist/rpc/index.d.ts",
+      "import": "./dist/rpc/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
   "scripts": {
     "dev": "bun run --hot src/server.ts",
-    "generate:types": "bun run scripts/generate-types.ts"
+    "generate:types": "bun run scripts/generate-types.ts",
+    "build:types": "tsc -p tsconfig.types.json",
+    "prepublishOnly": "bun run build:types"
+  },
+  "peerDependencies": {
+    "drizzle-orm": ">=0.44.0",
+    "zod": ">=4.0.0"
   },
   "dependencies": {
     "@hono/zod-validator": "^0.7.4",
@@ -21,6 +54,7 @@
   "devDependencies": {
     "@types/bun": "latest",
     "drizzle-kit": "^0.31.5",
-    "tsx": "^4.20.6"
+    "tsx": "^4.20.6",
+    "typescript": "^5.9.3"
   }
 }
