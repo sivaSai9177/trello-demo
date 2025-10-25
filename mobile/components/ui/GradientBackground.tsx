@@ -20,7 +20,7 @@ export function GradientBackground({
 }: GradientBackgroundProps) {
   return (
     <LinearGradient
-      colors={colors}
+      colors={colors as any}
       start={{ x: 0, y: 0 }}
       end={{ x: 1, y: 1 }}
       style={[styles.gradient, style]}

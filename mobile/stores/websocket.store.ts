@@ -25,8 +25,8 @@ export const websocketStore = new Store<WebSocketState>({
 
 // WebSocket singleton
 let wsInstance: WebSocket | null = null;
-let reconnectTimeoutId: NodeJS.Timeout | undefined = undefined;
-let heartbeatIntervalId: NodeJS.Timeout | undefined = undefined;
+let reconnectTimeoutId: ReturnType<typeof setTimeout> | undefined = undefined;
+let heartbeatIntervalId: ReturnType<typeof setInterval> | undefined = undefined;
 let netInfoUnsubscribe: (() => void) | undefined = undefined;
 let appStateSubscription: any = undefined;
 

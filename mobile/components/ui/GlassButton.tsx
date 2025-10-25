@@ -50,7 +50,7 @@ export function GlassButton({
     >
       <BlurView intensity={25} tint="light" style={styles.blurView}>
         <LinearGradient
-          colors={getVariantColors()}
+          colors={getVariantColors() as any}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 1 }}
           style={styles.gradient}

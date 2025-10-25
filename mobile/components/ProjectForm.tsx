@@ -80,7 +80,7 @@ export function ProjectForm({ visible, onClose, editingProject }: ProjectFormPro
               validators={{
                 onChange: ({ value }) => {
                   const result = z.string().min(1, 'Name is required').safeParse(value);
-                  return result.success ? undefined : result.error.errors[0].message;
+                  return result.success ? undefined : result.error.issues[0].message;
                 },
               }}
               children={(field) => (

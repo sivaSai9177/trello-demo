@@ -1,14 +1,28 @@
 import Constants from 'expo-constants';
+import { Platform } from 'react-native';
 
 type Environment = {
   apiUrl: string;
   wsUrl: string;
 };
 
+// Get the correct localhost URL based on platform
+const getLocalhost = () => {
+  if (Platform.OS === 'android') {
+    // Android Physical Device: Use your computer's IP address on the same network
+    return '192.168.1.103';
+
+    // Android Emulator: Uncomment the line below and comment out the line above
+    // return '10.0.2.2';
+  }
+  // iOS simulator can use localhost directly
+  return 'localhost';
+};
+
 const ENV: Record<string, Environment> = {
   dev: {
-    apiUrl: 'http://localhost:3002',
-    wsUrl: 'ws://localhost:3002',
+    apiUrl: `http://${getLocalhost()}:3002`,
+    wsUrl: `ws://${getLocalhost()}:3002`,
   },
   staging: {
     apiUrl: 'https://staging-api.example.com',
