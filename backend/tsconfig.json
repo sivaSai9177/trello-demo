@@ -15,7 +15,10 @@
     "skipLibCheck": true,
     /* Keep source clean */
     "isolatedModules": true,
-    "noEmit": true
+    "noEmit": true,
+    "paths": {
+      "@trello-demo/shared": ["../shared/types.ts"]
+    }
   },
   "include": ["src", "../frontend/src/hooks"]
 }

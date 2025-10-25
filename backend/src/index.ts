@@ -1,4 +1,5 @@
 import { Hono } from 'hono'
+import { RPCHandler } from "@orpc/server/fetch";
 
 import { logger } from "hono/logger";
 import { prettyJSON } from "hono/pretty-json";
@@ -6,6 +7,7 @@ import { projectsRoute } from "./routes/projects";
 import { tasksRoute } from "./routes/tasks";
 import { commentsRoute } from './routes/comments';
 import { cors } from "hono/cors";
+import { appRouter, createContext } from "./rpc";
 
 const app = new Hono();
 
@@ -22,7 +24,23 @@ app.use(
   })
 );
 
-// Routes
+// oRPC Handler
+const rpcHandler = new RPCHandler(appRouter);
+
+app.use("/rpc/*", async (c, next) => {
+  const { matched, response } = await rpcHandler.handle(c.req.raw, {
+    prefix: "/rpc",
+    context: createContext(),
+  });
+
+  if (matched) {
+    return c.newResponse(response.body, response);
+  }
+
+  await next();
+});
+
+// REST Routes (keep for gradual migration)
 app.route("/projects", projectsRoute);
 app.route("/tasks", tasksRoute);
 app.route("/comments", commentsRoute);

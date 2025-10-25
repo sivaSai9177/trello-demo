@@ -1,5 +1,7 @@
 import { ProjectsList } from "@/components/ProjectsList";
 import { createFileRoute } from "@tanstack/react-router";
+import { orpcClient } from "@/lib/orpc-client";
+import type { Project } from "@trello-demo/shared";
 
 import {
   Zap,
@@ -13,9 +15,24 @@ import { useEffect } from "react";
 
 export const Route = createFileRoute("/")({
   component: App,
+  // Prefetch projects data on the server before rendering
+  loader: async ({ context: { queryClient } }) => {
+    // Fetch and return projects data
+    const projects = await queryClient.ensureQueryData({
+      queryKey: ["projects"],
+      queryFn: async (): Promise<Project[]> => {
+        return await orpcClient.projects.getAll();
+      },
+    });
+
+    return { projects };
+  },
 });
 
 function App() {
+  // Access loader data
+  const { projects } = Route.useLoaderData();
+
   const features = [
     {
       icon: <Zap className="w-12 h-12 text-cyan-400" />,
@@ -54,36 +71,6 @@ function App() {
         "Built from the ground up for modern web applications. Deploy anywhere JavaScript runs.",
     },
   ];
-  const socket = new WebSocket("ws://localhost:3002/projects");
-
-  socket.addEventListener("open", (eve) => {
-    console.log("Event:", eve);
-  });
-  // useEffect(() => {
-
-  //   socket.onopen = (eve) => console.log("✅ WebSocket connected", eve);
-
-  //   socket.onmessage = (event) => {
-  //     const msg = JSON.parse(event.data);
-  //     console.log("msg",msg)
-  //     if (!msg.type) return;
-
-  //     switch (msg.type) {
-  //       case "project:read":
-  //         console.log(
-  //           `Someone fetched projects! Timestamp: ${msg.payload.timestamp}, count: ${msg.payload.count}`
-  //         );
-  //         // Optional: you can update a “views counter” or just log analytics
-  //         break;
-  //     }
-  //   };
-
-  //   socket.onclose = () => console.log("❌ WebSocket disconnected");
-  //   socket.onerror = (err) => console.error("WebSocket error", err);
-
-  //   return () => socket.close();
-  // }, []);
-
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900">
       <section className="relative py-20 px-6 text-center overflow-hidden">
@@ -147,7 +134,7 @@ function App() {
           ))}
         </div>
       </section> */}
-      <ProjectsList />
+      <ProjectsList initialProjects={projects} />
     </div>
   );
 }

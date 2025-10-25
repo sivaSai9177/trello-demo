@@ -1,20 +1,22 @@
 // components/ProjectsList.tsx
 import {
-  useProjects,
-  useCreateProject,
-  useDeleteProject,
-} from "../hooks/useProjects";
-import { useWebSocket } from "../hooks/useWebSocket";
+  useProjectsRPC,
+  useCreateProjectRPC,
+  useDeleteProjectRPC,
+} from "../hooks/useProjectsRPC";
 import { ConnectionStatus } from "./ConnectionStatus";
 import { useState } from "react";
+import type { Project } from "@trello-demo/shared";
 
-export function ProjectsList() {
-  const { data: projects, isLoading, error } = useProjects();
-  const createProject = useCreateProject();
-  const deleteProject = useDeleteProject();
+interface ProjectsListProps {
+  initialProjects?: Project[];
+}
 
-  // Connect to WebSocket and get connection status
-  const { connectionStatus } = useWebSocket("ws://localhost:3002");
+export function ProjectsList({ initialProjects }: ProjectsListProps) {
+  // Use TanStack Query - it will use the loader's prefetched data from cache
+  const { data: projects, error } = useProjectsRPC();
+  const createProject = useCreateProjectRPC();
+  const deleteProject = useDeleteProjectRPC();
 
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
@@ -26,13 +28,17 @@ export function ProjectsList() {
     setDescription("");
   };
 
-  if (isLoading) return <div className="p-4">Loading...</div>;
+  // Use loader data as fallback if query is still loading
+  const displayProjects = projects ?? initialProjects ?? [];
+
+  console.log("ProjectsList render - projects:", displayProjects?.[0]?.name);
+
   if (error)
     return <div className="p-4 text-red-500">Error loading projects</div>;
 
   return (
     <div className="p-4 max-w-4xl mx-auto">
-      <ConnectionStatus status={connectionStatus} />
+      <ConnectionStatus  />
       <h1 className="text-3xl font-bold mb-6 text-white">Projects</h1>
 
       {/* Create Project Form */}
@@ -68,10 +74,10 @@ export function ProjectsList() {
 
       {/* Projects List */}
       <div className="space-y-4">
-        {projects?.length === 0 ? (
+        {displayProjects.length === 0 ? (
           <p className="text-gray-500">No projects yet</p>
         ) : (
-          projects?.map((project) => (
+          displayProjects.map((project) => (
             <div
               key={project.id}
               className="p-4 border rounded-lg hover:shadow-md transition"
@@ -87,7 +93,7 @@ export function ProjectsList() {
                   </p>
                 </div>
                 <button
-                  onClick={() => deleteProject.mutate(project.id)}
+                  onClick={() => deleteProject.mutate({ id: project.id })}
                   disabled={deleteProject.isPending}
                   className="ml-4 px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 disabled:opacity-50"
                 >

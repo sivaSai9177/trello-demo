@@ -1,11 +1,15 @@
 {
   "name": "trello-demo",
   "scripts": {
-    "dev": "bun run --hot src/server.ts"
+    "dev": "bun run --hot src/server.ts",
+    "generate:types": "bun run scripts/generate-types.ts"
   },
   "dependencies": {
     "@hono/zod-validator": "^0.7.4",
     "@neondatabase/serverless": "^1.0.2",
+    "@orpc/contract": "^1.10.1",
+    "@orpc/server": "^1.10.1",
+    "@orpc/zod": "^1.10.1",
     "@types/node": "^24.9.1",
     "dotenv": "^17.2.3",
     "drizzle-orm": "^0.44.6",

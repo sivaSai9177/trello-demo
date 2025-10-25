@@ -1,11 +1,6 @@
-// components/ConnectionStatus.tsx
-type ConnectionStatus = "connecting" | "connected" | "disconnected" | "error";
+import { useWebSocketStore } from "@/hooks/useWebSocketStore";
 
-interface ConnectionStatusProps {
-  status: ConnectionStatus;
-}
-
-export function ConnectionStatus({ status }: ConnectionStatusProps) {
+export function ConnectionStatus() {
   const statusConfig = {
     connecting: {
       color: "bg-yellow-500",
@@ -29,7 +24,10 @@ export function ConnectionStatus({ status }: ConnectionStatusProps) {
     },
   };
 
-  const config = statusConfig[status];
+  // Get WebSocket connection status from TanStack Store
+  const { connectionStatus } = useWebSocketStore();
+
+  const config = statusConfig[connectionStatus];
 
   return (
     <div className="fixed top-4 right-4 z-50 flex items-center gap-2 px-4 py-2 rounded-lg bg-slate-800/90 backdrop-blur-sm border border-slate-700 shadow-lg">

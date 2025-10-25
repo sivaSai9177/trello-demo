@@ -1,0 +1,13 @@
+{
+  "name": "@trello-demo/shared",
+  "version": "1.0.0",
+  "type": "module",
+  "main": "./types.ts",
+  "types": "./types.ts",
+  "exports": {
+    ".": "./types.ts"
+  },
+  "devDependencies": {
+    "drizzle-orm": "0.44.6"
+  }
+}
