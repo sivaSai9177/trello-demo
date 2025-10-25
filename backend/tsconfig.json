@@ -1,0 +1,21 @@
+{
+  "compilerOptions": {
+    "strict": true,
+    "jsx": "react-jsx",
+    "jsxImportSource": "hono/jsx",
+       /* Modern JS runtime target */
+    "target": "ES2022",
+    /* Required for Bun and Hono (ESM imports) */
+    "module": "NodeNext",
+    "allowSyntheticDefaultImports": true,
+    "moduleResolution": "NodeNext",
+    "lib": ["ESNext"],
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "skipLibCheck": true,
+    /* Keep source clean */
+    "isolatedModules": true,
+    "noEmit": true
+  },
+  "include": ["src", "../frontend/src/hooks"]
+}
